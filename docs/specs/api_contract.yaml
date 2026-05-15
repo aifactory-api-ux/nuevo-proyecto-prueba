@@ -1,0 +1,143 @@
+openapi: 3.1.0
+info:
+  title: Dispatch API
+  version: '1.0.0'
+paths:
+  /api/dispatches/:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DispatchCreate'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispatch'
+    get:
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispatchList'
+  /api/dispatches/stats/plant:
+    get:
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DispatchStatsList'
+  /api/dispatches/{dispatch_id}:
+    get:
+      parameters:
+        - name: dispatch_id
+          in: path
+          required: true
+          schema:
+            type: integer
+    delete:
+      parameters:
+        - name: dispatch_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                required:
+                  - ok
+    get:
+      parameters:
+        - name: dispatch_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dispatch'
+components:
+  schemas:
+    DispatchBase:
+      type: object
+      properties:
+        plant:
+          type: string
+        distribution_center:
+          type: string
+        product:
+          type: string
+        quantity:
+          type: integer
+        dispatched_at:
+          type: string
+          format: date-time
+      required:
+        - plant
+        - distribution_center
+        - product
+        - quantity
+        - dispatched_at
+    DispatchCreate:
+      allOf:
+        - $ref: '#/components/schemas/DispatchBase'
+    Dispatch:
+      allOf:
+        - $ref: '#/components/schemas/DispatchBase'
+        - type: object
+          properties:
+            id:
+              type: integer
+          required:
+            - id
+    DispatchList:
+      type: object
+      properties:
+        dispatches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Dispatch'
+      required:
+        - dispatches
+    DispatchStats:
+      type: object
+      properties:
+        plant:
+          type: string
+        total_quantity:
+          type: integer
+        dispatch_count:
+          type: integer
+      required:
+        - plant
+        - total_quantity
+        - dispatch_count
+    DispatchStatsList:
+      type: object
+      properties:
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/DispatchStats'
+      required:
+        - stats
