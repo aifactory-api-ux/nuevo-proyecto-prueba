@@ -6,6 +6,6 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 23002,
-    allowedHosts: ['localhost', '127.0.0.1'],
+    allowedHosts: ['distro-viz-frontend', 'dispatch-api', 'backend', 'localhost', '127.0.0.1', '172.20.0.3'],
   },
 });
