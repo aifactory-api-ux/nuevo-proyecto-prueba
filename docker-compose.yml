@@ -4,31 +4,19 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: dispatch-api
-    ports:
-      - "23001:23001"
+    network_mode: host
     environment:
       - DATABASE_URL=sqlite:///./app.db
       - BACKEND_HOST=0.0.0.0
       - BACKEND_PORT=23001
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:23001/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: distro-viz-frontend
-    ports:
-      - "23002:23002"
+    network_mode: host
     environment:
-      - VITE_API_URL=http://backend:23001/api
+      - VITE_API_URL=http://localhost:23001/api
     depends_on:
       - backend
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:23002"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
