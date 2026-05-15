@@ -9,4 +9,4 @@ COPY app /app/app
 
 EXPOSE 23001
 
-CMD ["bash", "start.sh"]
+CMD ["sh", "start.sh"]
