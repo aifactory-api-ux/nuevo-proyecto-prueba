@@ -4,7 +4,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: dispatch-api
-    network_mode: host
+    ports:
+      - "127.0.0.1:23001:23001"
     environment:
       - DATABASE_URL=sqlite:///./app.db
       - BACKEND_HOST=0.0.0.0
@@ -15,7 +16,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: distro-viz-frontend
-    network_mode: host
+    ports:
+      - "127.0.0.1:23002:23002"
     environment:
       - VITE_API_URL=http://localhost:23001/api
     depends_on:
