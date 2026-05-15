@@ -10,9 +10,9 @@ services:
       - DATABASE_URL=sqlite:///./app.db
       - BACKEND_HOST=0.0.0.0
       - BACKEND_PORT=23001
-volumes:
-       - ./backend/app:/app/app
-       - ./backend/app.db:/app/app.db
+    volumes:
+      - ./backend/app:/app/app
+      - ./backend/app.db:/app/app.db
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:23001/health"]
       interval: 30s
