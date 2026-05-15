@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import sys
 from contextlib import asynccontextmanager
@@ -14,7 +15,8 @@ logging.basicConfig(
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    init_db()
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, init_db)
     yield
 
 

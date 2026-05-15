@@ -81,6 +81,5 @@ def test_auto_init_does_not_duplicate_seed_data():
 
 def test_database_connection_error_raises_exception():
     with pytest.raises(Exception):
-        from sqlalchemy import create_engine
         bad_engine = create_engine('invalid://')
         bad_engine.connect()

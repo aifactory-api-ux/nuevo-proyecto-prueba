@@ -1,5 +1,7 @@
 import pytest
+from contextlib import asynccontextmanager
 from datetime import datetime
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,21 +11,27 @@ from app.database import Base, get_db
 
 @pytest.fixture
 def client():
-    engine = create_engine('sqlite:///:memory:', connect_args={'check_same_thread': False})
-    Base.metadata.create_all(engine)
-    SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
+    test_engine = create_engine('sqlite:///:memory:', connect_args={'check_same_thread': False})
+    Base.metadata.create_all(test_engine)
+    TestSessionLocal = sessionmaker(bind=test_engine, expire_on_commit=False)
 
     def get_test_db():
-        db = SessionLocal()
+        db = TestSessionLocal()
         try:
             yield db
         finally:
             db.close()
 
-    app.dependency_overrides[get_db] = get_test_db
-    with TestClient(app) as c:
+    @asynccontextmanager
+    async def test_lifespan(app: FastAPI):
+        yield
+
+    test_app = FastAPI(title='Dispatch API', version='1.0.0', lifespan=test_lifespan)
+    from app.api import router as api_router
+    test_app.include_router(api_router)
+    test_app.dependency_overrides[get_db] = get_test_db
+    with TestClient(test_app) as c:
         yield c
-    app.dependency_overrides.clear()
 
 
 def test_create_dispatch_success(client):
